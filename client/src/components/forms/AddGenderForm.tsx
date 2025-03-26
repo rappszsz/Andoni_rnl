@@ -6,7 +6,7 @@ export const AddGenderForm = () => {
           <label htmlFor="gender">Gender</label>
           <input
             type="text"
-            className="forn-control"
+            className="form-control"
             id="gender"
             name="gender"
           />
