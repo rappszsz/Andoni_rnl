@@ -1,9 +1,38 @@
-const AlertMessage = () => {
+import { useEffect } from "react";
+
+interface AlertMessageProps {
+  message: string;
+  isSuccess: boolean;
+  isVisible: boolean;
+  onClose: () => void;
+}
+
+const AlertMessage = ({
+  message,
+  isSuccess,
+  isVisible,
+  onClose,
+}: AlertMessageProps) => {
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, onClose]);
+
   return (
     <>
       <div>
-        <div className="alert alert-success" role="alert">
-          A simple success alert—check it out!
+        <div
+          className={`alert ${isSuccess ? "alert-success" : "alert-danger"} ${
+            isVisible ? "show" : "d-none"
+          }`}
+          role="alert"
+        >
+          {message}
         </div>
       </div>
     </>

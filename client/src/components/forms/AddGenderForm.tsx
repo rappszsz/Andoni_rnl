@@ -4,7 +4,11 @@ import GenderServices from "../../services/GenderServices";
 import ErrorHandler from "../../handler/ErrorHandler";
 import GenderFieldErrors from "../../interfaces/GenderFieldErrors";
 
-export const AddGenderForm = () => {
+interface AddGenderFormProps {
+  onGenderAdded: (message: string) => void;
+}
+
+export const AddGenderForm = ({ onGenderAdded }: AddGenderFormProps) => {
   const [state, setState] = useState({
     loadingStore: false,
     gender: "",
@@ -35,6 +39,8 @@ export const AddGenderForm = () => {
             gender: "",
             errors: {} as GenderFieldErrors,
           }));
+
+          onGenderAdded(res.data.message);
         } else {
           console.error(
             "Unexpeected Status Error During Storing gender",
@@ -43,9 +49,7 @@ export const AddGenderForm = () => {
         }
       })
       .catch((error) => {
-        console.error("Error during storing gender:", error);
-
-        if (error.response?.status === 422) {
+        if (error.response.status === 422) {
           setState((prevState) => ({
             ...prevState,
             errors: error.response.data.errors,
@@ -54,7 +58,6 @@ export const AddGenderForm = () => {
           ErrorHandler(error, null);
         }
       })
-
       .finally(() => {
         setState((prevState) => ({
           ...prevState,
