@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import GenderService from "../../services/GenderService";
 import ErrorHandler from "../../handler/ErrorHandler";
 import Spinner from "../Spinner";
+import SpinnerSmall from "../SpinnerSmall";
 
 interface DeleteGenderFormProps {
   onDeleteGender: (message: string) => void;
@@ -105,11 +106,26 @@ const DeleteGenderForm = ({ onDeleteGender }: DeleteGenderFormProps) => {
               />
             </div>
             <div className="d-flex justify-content-end">
-              <Link to={"/"} className="btn btn-primary">
+              <Link
+                to={"/"}
+                className={`btn btn- secondary me-1 ${
+                  state.loadingDestroy ? "disabled" : ""
+                }`}
+              >
                 NO
               </Link>
-              <button type="button" className="btn btn-danger">
-                YES
+              <button
+                type="button"
+                className="btn btn-danger"
+                disabled={state.loadingDestroy}
+              >
+                {state.loadingDestroy ? (
+                  <>
+                    <SpinnerSmall /> Deleting...
+                  </>
+                ) : (
+                  "YES"
+                )}
               </button>
             </div>
           </div>
