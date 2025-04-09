@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import GenderService from "../../services/GenderService";
-import ErrorHandler from "../../handler/ErrorHandler";
-import Spinner from "../Spinner";
-import SpinnerSmall from "../SpinnerSmall";
+import GenderService from "../../../services/GenderService";
+import ErrorHandler from "../../../handler/ErrorHandler";
+import Spinner from "../../Spinner";
+import SpinnerSmall from "../../SpinnerSmall";
 
 interface DeleteGenderFormProps {
   onDeleteGender: (message: string) => void;
@@ -93,6 +93,7 @@ const DeleteGenderForm = ({ onDeleteGender }: DeleteGenderFormProps) => {
         </div>
       ) : (
         <form onSubmit={handleDestroyGender}>
+          <h3>Are you sure do you want to delete this gender</h3>
           <div className="form-group">
             <div className="mb-3">
               <label htmlFor="gender">Delete Gender</label>
@@ -108,14 +109,14 @@ const DeleteGenderForm = ({ onDeleteGender }: DeleteGenderFormProps) => {
             <div className="d-flex justify-content-end">
               <Link
                 to={"/"}
-                className={`btn btn- secondary me-1 ${
+                className={`btn btn-secondary me-1 ${
                   state.loadingDestroy ? "disabled" : ""
                 }`}
               >
-                NO
+                Back
               </Link>
               <button
-                type="button"
+                type="submit"
                 className="btn btn-danger"
                 disabled={state.loadingDestroy}
               >
