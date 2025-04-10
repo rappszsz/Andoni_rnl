@@ -7,11 +7,16 @@ import UserService from "../../../services/UserService";
 
 interface AddUserFormProps {
   setSubmitForm: React.MutableRefObject<(() => void) | null>;
+  setLoadingStore: (loading: boolean) => void;
+  onUserAdded: (message: string) => void;
 }
 
-const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
+const AddUserForm = ({
+  setSubmitForm,
+  setLoadingStore,
+  onUserAdded,
+}: AddUserFormProps) => {
   const [state, setState] = useState({
-    loadingStore: false,
     loadingGenders: true,
     genders: [] as Genders[],
     first_name: "",
@@ -27,6 +32,24 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
     password_confirmation: "",
     errors: {} as UserFieldErrors,
   });
+
+  const handleResetNecessaryFields = () => {
+    setState((prevState) => ({
+      ...prevState,
+      first_name: "",
+      middle_name: "",
+      last_name: "",
+      suffix_name: "",
+      birth_date: "",
+      gender: "",
+      address: "",
+      contact_number: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+      errors: {} as UserFieldErrors,
+    }));
+  };
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -61,20 +84,21 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
           ...prevState,
           loadingGenders: false,
         }));
+
+        setLoadingStore(true);
       });
   };
 
   const handleStoreUser = (e: FormEvent) => {
     e.preventDefault();
 
-    setState((prevState) => ({
-      ...prevState,
-      loadingStore: true,
-    }));
+    setLoadingStore(true);
 
     UserService.storeUser(state)
       .then((res) => {
         if (res.status === 200) {
+          handleResetNecessaryFields();
+          onUserAdded(res.data.message);
         } else {
           console.error(
             "Unexpected Status Error While Storing User",
@@ -93,10 +117,7 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
         }
       })
       .finally(() => {
-        setState((prevState) => ({
-          ...prevState,
-          loadingStore: false,
-        }));
+        setLoadingStore(false);
       });
   };
 
@@ -194,19 +215,23 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
                 className={`form-control ${
                   state.errors.birth_date ? "is-invalid" : ""
                 }`}
-                name="bitrh_date"
+                name="birth_date"
                 id="birth_date"
                 value={state.birth_date}
                 onChange={handleInputChange}
               />
               {state.errors.birth_date && (
                 <span className="text-danger">
-                  {state.errors.birth_date[0]}
+                  {state.errors.birth_date && (
+                    <span className="text-danger">
+                      {state.errors.birth_date[0]}
+                    </span>
+                  )}
                 </span>
               )}
             </div>
             <div className="mb-3">
-              <label htmlFor="gender">Gender</label>\
+              <label htmlFor="gender">Gender</label>
               <select
                 className={`form-control ${
                   state.errors.gender ? "is-invalid" : ""
@@ -238,7 +263,7 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
                 className={`form-control ${
                   state.errors.address ? "is-invalid" : ""
                 }`}
-                name="adress"
+                name="address"
                 id="address"
                 value={state.address}
                 onChange={handleInputChange}
@@ -304,7 +329,7 @@ const AddUserForm = ({ setSubmitForm }: AddUserFormProps) => {
                 Password Confirmation
               </label>
               <input
-                type="passowrd"
+                type="password"
                 className={`form-control ${
                   state.errors.password_confirmation ? "is-invalid" : ""
                 }`}

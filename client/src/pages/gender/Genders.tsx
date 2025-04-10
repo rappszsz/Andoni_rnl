@@ -23,6 +23,7 @@ const Genders = () => {
 
   const handleCloseAlertMessage = () => {
     setMessage("");
+    setIsSuccess(false);
     setIsVisible(false);
   };
 
