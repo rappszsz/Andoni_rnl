@@ -4,7 +4,12 @@ import UserService from "../../../services/UserService";
 import ErrorHandler from "../../../handler/ErrorHandler";
 import Spinner from "../../Spinner";
 
-const UsersTable = () => {
+interface UsersTable {
+  refreshUsers: boolean;
+  onEditUser: (user: Users) => void;
+}
+
+const UsersTable = ({ refreshUsers, onEditUser }: UsersTable) => {
   const [state, setState] = useState({
     loadingUsers: true,
     users: [] as Users[],
@@ -56,7 +61,7 @@ const UsersTable = () => {
 
   useEffect(() => {
     handleLoadUsers();
-  }, []);
+  }, [refreshUsers]);
 
   return (
     <>
@@ -71,12 +76,13 @@ const UsersTable = () => {
             <th>Address</th>
             <th>Contact Number</th>
             <th>Email</th>
+            <td>Action</td>
           </tr>
         </thead>
         <tbody>
           {state.loadingUsers ? (
             <tr className="align-middle">
-              <td colSpan={8} className="text-center">
+              <td colSpan={9} className="text-center">
                 <Spinner />
               </td>
             </tr>
@@ -91,11 +97,25 @@ const UsersTable = () => {
                 <td>{user.address}</td>
                 <td>{user.contact_number}</td>
                 <td>{user.email}</td>
+                <td>
+                  <div className="btn-group">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => onEditUser(user)}
+                    >
+                      Edit
+                    </button>
+                    <button type="button" className="btn btn-danger">
+                      Delete
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))
           ) : (
             <tr className="align-middle">
-              <td colSpan={8} className="text-center">
+              <td colSpan={9} className="text-center">
                 No Users Found
               </td>
             </tr>
